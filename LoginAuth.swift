@@ -92,17 +92,19 @@ func chromaKeyLightBlue(_ image: NSImage) -> NSImage {
     ctx.draw(cg, in: CGRect(x: 0, y: 0, width: w, height: h))
     guard let data = ctx.data else { return image }
     let ptr = data.bindMemory(to: UInt8.self, capacity: w * h * 4)
+    
     for i in 0..<(w * h) {
         let r = Int(ptr[i*4+0]), g = Int(ptr[i*4+1]), b = Int(ptr[i*4+2])
         let dr = r - 170, dg = g - 214, db = b - 242
         let distSq = dr*dr + dg*dg + db*db
-        if distSq < 2500 {
-            ptr[i*4+3] = 0
-        } else if distSq < 4900 {
-            let alpha = UInt8(max(0, min(255, Int(ptr[i*4+3]) * (distSq - 2500) / 2400)))
-            ptr[i*4+3] = alpha
+        if distSq < 1600 {
+            ptr[i*4+3] = 0 // Fully transparent
+        } else if distSq < 3600 {
+            let alpha = UInt8(max(0, min(255, Int(ptr[i*4+3]) * (distSq - 1600) / 2000)))
+            ptr[i*4+3] = alpha // Feathered edge
         }
     }
+    
     guard let newCg = ctx.makeImage() else { return image }
     return NSImage(cgImage: newCg, size: NSSize(width: w, height: h))
 }
