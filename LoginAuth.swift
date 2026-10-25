@@ -90,9 +90,9 @@ struct FinderPadlockIcon: View {
                 Image(nsImage: img)
                     .resizable()
                     .interpolation(.high)
-                    .frame(width: 72, height: 72)
+                    .frame(width: 88, height: 88)
             } else {
-                Color.clear.frame(width: 72, height: 72)
+                Color.clear.frame(width: 88, height: 88)
             }
         }
         .onAppear {
@@ -105,7 +105,7 @@ struct FinderPadlockIcon: View {
 }
 
 private let appleSystemBlue = Color(red: 0.0, green: 0.478, blue: 1.0)
-private let fieldAlpha: Double = 0.14
+private let fieldAlpha: Double = 0.15
 
 struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -113,8 +113,8 @@ struct SecondaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(.primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 22)
-            .background(Capsule(style: .continuous).fill(Color.black.opacity(0.12)))
+            .frame(height: 26)
+            .background(Capsule(style: .continuous).fill(Color.black.opacity(0.14)))
             .contentShape(Capsule(style: .continuous))
             .opacity(configuration.isPressed ? 0.70 : 1.0)
     }
@@ -127,10 +127,10 @@ struct PrimaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(isActive ? .white : .primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 22)
+            .frame(height: 26)
             .background(
                 Capsule(style: .continuous)
-                    .fill(isActive ? appleSystemBlue : Color.black.opacity(0.12))
+                    .fill(isActive ? appleSystemBlue : Color.black.opacity(0.14))
             )
             .contentShape(Capsule(style: .continuous))
             .opacity(configuration.isPressed ? 0.80 : 1.0)
@@ -149,30 +149,30 @@ struct ContentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             FinderPadlockIcon()
-                .padding(.bottom, 16)
+                .padding(.bottom, 18)
 
             Text("Finder")
-                .font(.system(size: 13, weight: .bold))
+                .font(.system(size: 15, weight: .bold))
                 .foregroundColor(.primary)
-                .padding(.bottom, 10)
+                .padding(.bottom, 16)
 
             Text("Finder wants to copy \u{201C}Adobe Photoshop\u{201D}.")
-                .font(.system(size: 12))
+                .font(.system(size: 13))
                 .foregroundColor(.primary)
-                .padding(.bottom, 6)
+                .padding(.bottom, 8)
 
             Text("Enter an administrator\u{2019}s name and password to allow this.")
-                .font(.system(size: 12))
+                .font(.system(size: 13))
                 .foregroundColor(.primary)
                 .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.bottom, 14)
+                .padding(.bottom, 16)
 
             fieldContainer(text: $username, placeholder: "Username", secure: false, field: .username)
-                .padding(.bottom, 8)
+                .padding(.bottom, 10)
 
             fieldContainer(text: $password, placeholder: "Password", secure: true, field: .password)
-                .padding(.bottom, 14)
+                .padding(.bottom, 18)
 
             HStack(spacing: 12) {
                 Button("Cancel") { cancel() }
@@ -193,12 +193,12 @@ struct ContentView: View {
                 }
             }
         }
-        .padding(16)
-        .frame(width: 250)
+        .padding(20)
+        .frame(width: 280)
         .background(VisualEffectView(material: .popover))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
         )
         .compositingGroup()
@@ -228,8 +228,8 @@ struct ContentView: View {
         ZStack(alignment: .leading) {
             if text.wrappedValue.isEmpty {
                 Text(placeholder)
-                    .font(.system(size: 12))
-                    .foregroundColor(Color.primary.opacity(0.40))
+                    .font(.system(size: 13))
+                    .foregroundColor(Color.secondary.opacity(0.55))
                     .padding(.horizontal, 10)
                     .allowsHitTesting(false)
             }
@@ -241,9 +241,9 @@ struct ContentView: View {
                 }
             }
             .textFieldStyle(.plain)
-            .font(.system(size: 12))
+            .font(.system(size: 13))
             .padding(.horizontal, 10)
-            .frame(height: 22)
+            .frame(height: 24)
             .focused($focusedField, equals: field)
             .disabled(isLoading)
             .onSubmit { submit() }
@@ -253,10 +253,15 @@ struct ContentView: View {
                 .fill(Color.black.opacity(fieldAlpha))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .stroke(appleSystemBlue, lineWidth: 1.5)
-                .opacity(isFocused ? 1.0 : 0.0)
-                .animation(.easeInOut(duration: 0.15), value: isFocused)
+            ZStack {
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .stroke(appleSystemBlue.opacity(0.25), lineWidth: 3.5)
+                    .blur(radius: 1.5)
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .stroke(appleSystemBlue.opacity(0.8), lineWidth: 1.5)
+            }
+            .opacity(isFocused ? 1.0 : 0.0)
+            .animation(.easeInOut(duration: 0.15), value: isFocused)
         )
     }
 
