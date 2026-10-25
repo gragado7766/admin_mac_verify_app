@@ -82,34 +82,6 @@ struct VisualEffectView: NSViewRepresentable {
     }
 }
 
-// V25 logic: perfect transparency, leaves whites and silvers untouched
-func chromaKeyLightBlue(_ image: NSImage) -> NSImage {
-    guard let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return image }
-    let w = cg.width, h = cg.height
-    guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8,
-                              bytesPerRow: w * 4,
-                              space: CGColorSpaceCreateDeviceRGB(),
-                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return image }
-    ctx.draw(cg, in: CGRect(x: 0, y: 0, width: w, height: h))
-    guard let data = ctx.data else { return image }
-    let ptr = data.bindMemory(to: UInt8.self, capacity: w * h * 4)
-    
-    for i in 0..<(w * h) {
-        let r = Int(ptr[i*4+0]), g = Int(ptr[i*4+1]), b = Int(ptr[i*4+2])
-        let dr = r - 170, dg = g - 214, db = b - 242
-        let distSq = dr*dr + dg*dg + db*db
-        if distSq < 1600 {
-            ptr[i*4+3] = 0
-        } else if distSq < 3600 {
-            let alpha = UInt8(max(0, min(255, Int(ptr[i*4+3]) * (distSq - 1600) / 2000)))
-            ptr[i*4+3] = alpha
-        }
-    }
-    
-    guard let newCg = ctx.makeImage() else { return image }
-    return NSImage(cgImage: newCg, size: NSSize(width: w, height: h))
-}
-
 struct FinderPadlockIcon: View {
     @State private var processed: NSImage? = nil
     var body: some View {
@@ -126,7 +98,7 @@ struct FinderPadlockIcon: View {
         .onAppear {
             if let path = Bundle.main.path(forResource: "icon", ofType: "png"),
                let raw = NSImage(contentsOfFile: path) {
-                processed = chromaKeyLightBlue(raw)
+                processed = raw // NO PROCESSING. Displays the image exactly as it is.
             }
         }
     }
