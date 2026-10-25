@@ -90,9 +90,9 @@ struct FinderPadlockIcon: View {
                 Image(nsImage: img)
                     .resizable()
                     .interpolation(.high)
-                    .frame(width: 64, height: 64) // GitHub Size
+                    .frame(width: 76, height: 76)
             } else {
-                Color.clear.frame(width: 64, height: 64)
+                Color.clear.frame(width: 76, height: 76)
             }
         }
         .onAppear {
@@ -113,7 +113,7 @@ struct SecondaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(.primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 24) // GitHub Size
+            .frame(height: 22)
             .background(Capsule(style: .continuous).fill(Color.black.opacity(0.12)))
             .contentShape(Capsule(style: .continuous))
             .opacity(configuration.isPressed ? 0.70 : 1.0)
@@ -127,7 +127,7 @@ struct PrimaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(isActive ? .white : .primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 24) // GitHub Size
+            .frame(height: 22)
             .background(
                 Capsule(style: .continuous)
                     .fill(isActive ? appleSystemBlue : Color.black.opacity(0.12))
@@ -152,7 +152,7 @@ struct ContentView: View {
                 .padding(.bottom, 16)
 
             Text("Finder")
-                .font(.system(size: 15, weight: .bold)) // GitHub Text Size
+                .font(.system(size: 13, weight: .bold))
                 .foregroundColor(.primary)
                 .padding(.bottom, 12)
 
@@ -193,12 +193,12 @@ struct ContentView: View {
                 }
             }
         }
-        .padding(20) // GitHub Padding
-        .frame(width: 320) // GitHub Width
+        .padding(20)
+        .frame(width: 320)
         .background(VisualEffectView(material: .popover))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
         )
         .compositingGroup()
@@ -243,7 +243,7 @@ struct ContentView: View {
             .textFieldStyle(.plain)
             .font(.system(size: 13))
             .padding(.horizontal, 10)
-            .frame(height: 24) // GitHub Size
+            .frame(height: 22)
             .focused($focusedField, equals: field)
             .disabled(isLoading)
             .onSubmit { submit() }
