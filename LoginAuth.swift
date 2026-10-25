@@ -90,9 +90,9 @@ struct FinderPadlockIcon: View {
                 Image(nsImage: img)
                     .resizable()
                     .interpolation(.high)
-                    .frame(width: 72, height: 72)
+                    .frame(width: 64, height: 64) // GitHub Size
             } else {
-                Color.clear.frame(width: 72, height: 72)
+                Color.clear.frame(width: 64, height: 64)
             }
         }
         .onAppear {
@@ -105,7 +105,7 @@ struct FinderPadlockIcon: View {
 }
 
 private let appleSystemBlue = Color(red: 0.0, green: 0.478, blue: 1.0)
-private let fieldAlpha: Double = 0.08
+private let fieldAlpha: Double = 0.15
 
 struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -113,8 +113,8 @@ struct SecondaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(.primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 28)
-            .background(Capsule(style: .continuous).fill(Color.black.opacity(0.08)))
+            .frame(height: 24) // GitHub Size
+            .background(Capsule(style: .continuous).fill(Color.black.opacity(0.12)))
             .contentShape(Capsule(style: .continuous))
             .opacity(configuration.isPressed ? 0.70 : 1.0)
     }
@@ -127,10 +127,10 @@ struct PrimaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(isActive ? .white : .primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 28)
+            .frame(height: 24) // GitHub Size
             .background(
                 Capsule(style: .continuous)
-                    .fill(isActive ? appleSystemBlue : Color.black.opacity(0.08))
+                    .fill(isActive ? appleSystemBlue : Color.black.opacity(0.12))
             )
             .contentShape(Capsule(style: .continuous))
             .opacity(configuration.isPressed ? 0.80 : 1.0)
@@ -149,10 +149,10 @@ struct ContentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             FinderPadlockIcon()
-                .padding(.bottom, 16) // Restored generous spacing
+                .padding(.bottom, 16)
 
             Text("Finder")
-                .font(.system(size: 13, weight: .bold)) // Smaller bold heading
+                .font(.system(size: 15, weight: .bold)) // GitHub Text Size
                 .foregroundColor(.primary)
                 .padding(.bottom, 12)
 
@@ -164,15 +164,15 @@ struct ContentView: View {
             Text("Enter an administrator\u{2019}s name and password to allow this.")
                 .font(.system(size: 13))
                 .foregroundColor(.primary)
-                .lineSpacing(3) // More line spacing
+                .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.bottom, 16)
 
             fieldContainer(text: $username, placeholder: "Username", secure: false, field: .username)
-                .padding(.bottom, 10)
+                .padding(.bottom, 8)
 
             fieldContainer(text: $password, placeholder: "Password", secure: true, field: .password)
-                .padding(.bottom, 18)
+                .padding(.bottom, 16)
 
             HStack(spacing: 12) {
                 Button("Cancel") { cancel() }
@@ -193,12 +193,12 @@ struct ContentView: View {
                 }
             }
         }
-        .padding(20)
-        .frame(width: 280)
+        .padding(20) // GitHub Padding
+        .frame(width: 320) // GitHub Width
         .background(VisualEffectView(material: .popover))
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)) // Rounder corners
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
         )
         .compositingGroup()
@@ -243,7 +243,7 @@ struct ContentView: View {
             .textFieldStyle(.plain)
             .font(.system(size: 13))
             .padding(.horizontal, 10)
-            .frame(height: 26) // Taller fields
+            .frame(height: 24) // GitHub Size
             .focused($focusedField, equals: field)
             .disabled(isLoading)
             .onSubmit { submit() }
