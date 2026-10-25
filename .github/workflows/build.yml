@@ -16,7 +16,6 @@ jobs:
           <key>CFBundleExecutable</key><string>LoginAuth</string>
           <key>CFBundleIdentifier</key><string>com.local.loginauth</string>
           <key>CFBundleName</key><string>LoginAuth</string>
-          <key>CFBundleDisplayName</key><string>LoginAuth</string>
           <key>CFBundlePackageType</key><string>APPL</string>
           <key>CFBundleShortVersionString</key><string>1.0</string>
           <key>CFBundleVersion</key><string>1</string>
