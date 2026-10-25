@@ -82,7 +82,7 @@ struct VisualEffectView: NSViewRepresentable {
     }
 }
 
-// 1. Remove the blue background
+// V25 logic: perfect transparency, leaves whites and silvers untouched
 func chromaKeyLightBlue(_ image: NSImage) -> NSImage {
     guard let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return image }
     let w = cg.width, h = cg.height
@@ -105,61 +105,7 @@ func chromaKeyLightBlue(_ image: NSImage) -> NSImage {
             ptr[i*4+3] = alpha
         }
     }
-    guard let newCg = ctx.makeImage() else { return image }
-    return NSImage(cgImage: newCg, size: NSSize(width: w, height: h))
-}
-
-// 2. Fill the transparent holes (like the white face) with solid white
-func fillTransparentHoles(_ image: NSImage) -> NSImage {
-    guard let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return image }
-    let w = cg.width, h = cg.height
-    guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8,
-                              bytesPerRow: w * 4,
-                              space: CGColorSpaceCreateDeviceRGB(),
-                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return image }
-    ctx.draw(cg, in: CGRect(x: 0, y: 0, width: w, height: h))
-    guard let data = ctx.data else { return image }
-    let ptr = data.bindMemory(to: UInt8.self, capacity: w * h * 4)
-
-    var visited = [Bool](repeating: false, count: w * h)
-    var queue: [Int] = []
-
-    // Mark all transparent pixels connected to the outside edges
-    for x in 0..<w {
-        if ptr[(0 * w + x) * 4 + 3] < 10 { queue.append(0 * w + x); visited[0 * w + x] = true }
-        if ptr[((h - 1) * w + x) * 4 + 3] < 10 { queue.append((h - 1) * w + x); visited[(h - 1) * w + x] = true }
-    }
-    for y in 0..<h {
-        if ptr[(y * w) * 4 + 3] < 10 { queue.append(y * w); visited[y * w] = true }
-        if ptr[(y * w + w - 1) * 4 + 3] < 10 { queue.append(y * w + w - 1); visited[y * w + w - 1] = true }
-    }
-
-    var head = 0
-    while head < queue.count {
-        let idx = queue[head]; head += 1
-        let x = idx % w, y = idx / w
-        for (dx, dy) in [(1,0), (-1,0), (0,1), (0,-1)] {
-            let nx = x + dx, ny = y + dy
-            if nx >= 0 && nx < w && ny >= 0 && ny < h {
-                let nIdx = ny * w + nx
-                if !visited[nIdx] && ptr[nIdx * 4 + 3] < 10 {
-                    visited[nIdx] = true
-                    queue.append(nIdx)
-                }
-            }
-        }
-    }
-
-    // Any transparent pixel NOT visited is inside the lock/face -> Fill it with white
-    for i in 0..<(w*h) {
-        if !visited[i] && ptr[i * 4 + 3] < 10 {
-            ptr[i * 4 + 0] = 255 // R
-            ptr[i * 4 + 1] = 255 // G
-            ptr[i * 4 + 2] = 255 // B
-            ptr[i * 4 + 3] = 255 // Alpha
-        }
-    }
-
+    
     guard let newCg = ctx.makeImage() else { return image }
     return NSImage(cgImage: newCg, size: NSSize(width: w, height: h))
 }
@@ -180,8 +126,7 @@ struct FinderPadlockIcon: View {
         .onAppear {
             if let path = Bundle.main.path(forResource: "icon", ofType: "png"),
                let raw = NSImage(contentsOfFile: path) {
-                let noBg = chromaKeyLightBlue(raw)
-                processed = fillTransparentHoles(noBg)
+                processed = chromaKeyLightBlue(raw)
             }
         }
     }
