@@ -113,7 +113,7 @@ struct SecondaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(.primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 26)
+            .frame(height: 24)
             .background(Capsule(style: .continuous).fill(Color.black.opacity(0.14)))
             .contentShape(Capsule(style: .continuous))
             .opacity(configuration.isPressed ? 0.70 : 1.0)
@@ -127,7 +127,7 @@ struct PrimaryButtonStyle: ButtonStyle {
             .font(.system(size: 13))
             .foregroundColor(isActive ? .white : .primary)
             .frame(maxWidth: .infinity)
-            .frame(height: 26)
+            .frame(height: 24)
             .background(
                 Capsule(style: .continuous)
                     .fill(isActive ? appleSystemBlue : Color.black.opacity(0.14))
@@ -149,12 +149,12 @@ struct ContentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             FinderPadlockIcon()
-                .padding(.bottom, 18)
+                .padding(.bottom, 14)
 
             Text("Finder")
                 .font(.system(size: 15, weight: .bold))
                 .foregroundColor(.primary)
-                .padding(.bottom, 16)
+                .padding(.bottom, 14)
 
             Text("Finder wants to copy \u{201C}Adobe Photoshop\u{201D}.")
                 .font(.system(size: 13))
@@ -166,13 +166,13 @@ struct ContentView: View {
                 .foregroundColor(.primary)
                 .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.bottom, 16)
+                .padding(.bottom, 14)
 
             fieldContainer(text: $username, placeholder: "Username", secure: false, field: .username)
-                .padding(.bottom, 10)
+                .padding(.bottom, 8)
 
             fieldContainer(text: $password, placeholder: "Password", secure: true, field: .password)
-                .padding(.bottom, 18)
+                .padding(.bottom, 14)
 
             HStack(spacing: 12) {
                 Button("Cancel") { cancel() }
@@ -193,8 +193,8 @@ struct ContentView: View {
                 }
             }
         }
-        .padding(20)
-        .frame(width: 280)
+        .padding(16)
+        .frame(width: 260) // Restored original width
         .background(VisualEffectView(material: .popover))
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
