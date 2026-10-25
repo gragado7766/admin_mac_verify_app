@@ -82,52 +82,88 @@ struct VisualEffectView: NSViewRepresentable {
     }
 }
 
-func chromaKeyLightBlue(_ image: NSImage) -> NSImage {
-    guard let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return image }
-    let w = cg.width, h = cg.height
-    guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8,
-                              bytesPerRow: w * 4,
-                              space: CGColorSpaceCreateDeviceRGB(),
-                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return image }
-    ctx.draw(cg, in: CGRect(x: 0, y: 0, width: w, height: h))
-    guard let data = ctx.data else { return image }
-    let ptr = data.bindMemory(to: UInt8.self, capacity: w * h * 4)
-    
-    for i in 0..<(w * h) {
-        let r = Int(ptr[i*4+0]), g = Int(ptr[i*4+1]), b = Int(ptr[i*4+2])
-        let dr = r - 170, dg = g - 214, db = b - 242
-        let distSq = dr*dr + dg*dg + db*db
-        if distSq < 1600 {
-            ptr[i*4+3] = 0 // Fully transparent
-        } else if distSq < 3600 {
-            let alpha = UInt8(max(0, min(255, Int(ptr[i*4+3]) * (distSq - 1600) / 2000)))
-            ptr[i*4+3] = alpha // Feathered edge
-        }
-    }
-    
-    guard let newCg = ctx.makeImage() else { return image }
-    return NSImage(cgImage: newCg, size: NSSize(width: w, height: h))
-}
-
+// Drawn natively to permanently fix the corrupted image file
 struct FinderPadlockIcon: View {
-    @State private var processed: NSImage? = nil
     var body: some View {
-        Group {
-            if let img = processed {
-                Image(nsImage: img)
-                    .resizable()
-                    .interpolation(.high)
-                    .frame(width: 88, height: 88)
-            } else {
-                Color.clear.frame(width: 88, height: 88)
+        ZStack {
+            // Shackle
+            Path { p in
+                p.move(to: CGPoint(x: 24, y: 38))
+                p.addLine(to: CGPoint(x: 24, y: 22))
+                p.addArc(center: CGPoint(x: 44, y: 22), radius: 20, startAngle: .degrees(180), endAngle: .degrees(0), clockwise: false)
+                p.addLine(to: CGPoint(x: 64, y: 38))
             }
-        }
-        .onAppear {
-            if let path = Bundle.main.path(forResource: "icon", ofType: "png"),
-               let raw = NSImage(contentsOfFile: path) {
-                processed = chromaKeyLightBlue(raw)
+            .stroke(
+                LinearGradient(colors: [.white, Color(white: 0.72)], startPoint: .top, endPoint: .bottom),
+                style: StrokeStyle(lineWidth: 8, lineCap: .round, lineJoin: .round)
+            )
+            .offset(y: -8)
+            
+            // Gold Body
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .fill(
+                    LinearGradient(colors: [
+                        Color(red: 1.0, green: 0.88, blue: 0.45),
+                        Color(red: 0.85, green: 0.65, blue: 0.15)
+                    ], startPoint: .top, endPoint: .bottom)
+                )
+                .frame(width: 68, height: 48)
+                .overlay(
+                    VStack(spacing: 2) {
+                        ForEach(0..<12, id: \.self) { _ in
+                            Rectangle().fill(.black.opacity(0.05)).frame(height: 1)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .stroke(Color(red: 0.5, green: 0.3, blue: 0.0).opacity(0.5), lineWidth: 1)
+                )
+                .offset(y: 16)
+                
+            // Finder Face Badge
+            ZStack {
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .fill(
+                        LinearGradient(colors: [
+                            Color(red: 0.1, green: 0.7, blue: 1.0),
+                            Color(red: 0.0, green: 0.4, blue: 0.9)
+                        ], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 9, style: .continuous)
+                            .stroke(.white, lineWidth: 0.5)
+                    )
+                
+                // White half
+                Path { p in
+                    p.move(to: CGPoint(x: 17, y: 0))
+                    p.addLine(to: CGPoint(x: 34, y: 0))
+                    p.addLine(to: CGPoint(x: 34, y: 34))
+                    p.addLine(to: CGPoint(x: 17, y: 28))
+                    p.addCurve(to: CGPoint(x: 17, y: 0), control1: CGPoint(x: 22, y: 24), control2: CGPoint(x: 22, y: 10))
+                }
+                .fill(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+                
+                // Eyes
+                Capsule().fill(.black).frame(width: 1.5, height: 4).offset(x: -6, y: -7)
+                Capsule().fill(.black).frame(width: 1.5, height: 4).offset(x: 6, y: -7)
+                    
+                // Smile
+                Path { p in
+                    p.move(to: CGPoint(x: 9, y: 18))
+                    p.addQuadCurve(to: CGPoint(x: 25, y: 18), control: CGPoint(x: 17, y: 27))
+                }
+                .stroke(.black, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
             }
+            .frame(width: 34, height: 34)
+            .shadow(color: .black.opacity(0.3), radius: 1, y: 0.5)
+            .offset(x: 19, y: 21)
         }
+        .frame(width: 88, height: 88)
     }
 }
 
